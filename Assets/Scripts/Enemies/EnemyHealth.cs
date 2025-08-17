@@ -15,7 +15,7 @@ public class EnemyHealth : MonoBehaviour
 
     public void TakeDamage(int damage, Vector2 attackDirection)
     {
-        Debug.Log("Taking damage");
+        Debug.Log("Taking damage in enemy health");
         currentHealth -= damage;
 
         // Trigger knockback / hit reaction

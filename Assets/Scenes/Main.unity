@@ -263,53 +263,6 @@ MonoBehaviour:
   target: {fileID: 1770144147}
   offsetX: 10.35
   smoothSpeed: 5
---- !u!1 &682821579
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 682821580}
-  - component: {fileID: 682821581}
-  m_Layer: 0
-  m_Name: MeleeAttackScript
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &682821580
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 682821579}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.685, y: 0.004999998, z: 0}
-  m_LocalScale: {x: 0.9400002, y: 0.49, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1047704663}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &682821581
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 682821579}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65aa071024ae68585aef29678e3fb6dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  attackHitbox: {fileID: 864421187}
-  damageAmount: 1
-  attackDuration: 0.2
 --- !u!1 &864421187
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,13 +274,14 @@ GameObject:
   - component: {fileID: 864421188}
   - component: {fileID: 864421190}
   - component: {fileID: 864421189}
-  m_Layer: 0
+  - component: {fileID: 864421191}
+  m_Layer: 11
   m_Name: MeleeAttackHitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &864421188
 Transform:
   m_ObjectHideFlags: 0
@@ -447,6 +401,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.06, y: 0.84}
   m_EdgeRadius: 0
+--- !u!114 &864421191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864421187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24cd2244677fff0a0ae5ae9b746feb51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MeleeAttackHitbox
+  damage: 1
 --- !u!1 &1047704662
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,7 +423,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1047704663}
-  m_Layer: 0
+  - component: {fileID: 1047704664}
+  m_Layer: 11
   m_Name: MeleeAttackParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -476,10 +444,24 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 682821580}
   - {fileID: 864421188}
   m_Father: {fileID: 1770144147}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1047704664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1047704662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65aa071024ae68585aef29678e3fb6dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MeleeAttack
+  attackHitbox: {fileID: 864421187}
+  attackDuration: 0.2
+  attackDamage: 1
 --- !u!1001 &1673736733
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -778,11 +760,11 @@ PrefabInstance:
     - target: {fileID: 4608763015030703922, guid: 104344554e9c4a6c49f94746586a2896, type: 3}
       propertyPath: attackBlast
       value: 
-      objectReference: {fileID: 682821581}
+      objectReference: {fileID: 0}
     - target: {fileID: 4608763015030703922, guid: 104344554e9c4a6c49f94746586a2896, type: 3}
       propertyPath: meleeAttack
       value: 
-      objectReference: {fileID: 682821581}
+      objectReference: {fileID: 1047704664}
     - target: {fileID: 4608763015030703922, guid: 104344554e9c4a6c49f94746586a2896, type: 3}
       propertyPath: groundCheckRadius
       value: 0.1

@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Scripts/Enemies/MeleeAttack.cs" />
+    <Compile Include="Assets/Scripts/Enemies/MeleeAttackHitbox.cs" />
     <Compile Include="Assets/Scripts/Enemies/EnemyHealth.cs" />
     <Compile Include="Assets/Scripts/Input/PlayerControls.cs" />
     <Compile Include="Assets/Scripts/Enemies/EnemyController.cs" />

@@ -3,19 +3,22 @@ using System.Collections;
 
 public class MeleeAttack : MonoBehaviour
 {
-    public GameObject attackHitbox;      // Assign the hitbox child in Inspector
-    public float attackDuration = 0.2f;  // how long the hitbox stays active
+    [Header("References")]
+    public GameObject attackHitbox; // assign the child hitbox here
+    public float attackDuration = 0.2f; // how long hitbox stays active
+    public int attackDamage = 1; // damage dealt to enemies
 
     void Start()
     {
-        attackHitbox.SetActive(false); // hide hitbox initially
+        if (attackHitbox != null)
+            attackHitbox.SetActive(false); // hide initially
     }
 
     public void TriggerAttack(bool facingRight)
     {
         if (attackHitbox == null) return;
 
-        // Flip hitbox based on player facing
+        // Flip hitbox if necessary
         Vector3 scale = attackHitbox.transform.localScale;
         scale.x = Mathf.Abs(scale.x) * (facingRight ? 1 : -1);
         attackHitbox.transform.localScale = scale;

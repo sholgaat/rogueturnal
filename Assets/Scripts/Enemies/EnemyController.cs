@@ -95,6 +95,7 @@ public class EnemyController : MonoBehaviour
 
     public void TakeHit(Vector2 attackDirection)
     {
+        Debug.Log("Taking hit in enemy controller");
         rb.linearVelocity = Vector2.zero;
         rb.AddForce(new Vector2(hitForce.x * attackDirection.x, hitForce.y), ForceMode2D.Impulse);
         if (animator != null)
