@@ -1,59 +1,49 @@
 using UnityEngine;
 
-[RequireComponent(typeof(EnemyController))]
 public class EnemyHealth : MonoBehaviour
 {
-    public int maxHealth = 3;
-    private int currentHealth;
+    public int maxHealth = 10;
+    public RectTransform healthFill; // assign Fill from Canvas
 
-    private EnemyController enemyController;
-    private Animator animator;
+    private int currentHealth;
 
     void Awake()
     {
         currentHealth = maxHealth;
-        enemyController = GetComponent<EnemyController>();
-        animator = GetComponent<Animator>();
+        UpdateHealthBar();
     }
 
-    /// <summary>
-    /// Call this to apply damage to the enemy.
-    /// </summary>
-    /// <param name="damage">Amount of damage</param>
-    /// <param name="attackDirection">Direction of the attack: Vector2.right for right, Vector2.left for left</param>
-    public void TakeDamage(int damage, Vector2 attackDirection)
+    public void TakeDamage(int amount, Vector2 attackDirection)
     {
-        currentHealth -= damage;
+        currentHealth -= amount;
 
-        // Play hit animation if exists
-        if (animator != null)
-            animator.SetTrigger("Hit");
+        // Apply knockback
+        EnemyController controller = GetComponent<EnemyController>();
+        if (controller != null)
+            controller.TakeHit(attackDirection);
 
-        // Apply knockback via EnemyController
-        if (enemyController != null)
-            enemyController.TakeHit(attackDirection);
-
-        // Check if enemy is dead
         if (currentHealth <= 0)
+        {
+            currentHealth = 0;
             Die();
+        }
+
+        UpdateHealthBar();
     }
 
-    private void Die()
+    void UpdateHealthBar()
     {
-        // Optional: play death animation
-        if (animator != null)
-            animator.SetTrigger("Die");
+        if (healthFill != null)
+        {
+            float ratio = (float)currentHealth / maxHealth;
+            Vector3 scale = healthFill.localScale;
+            scale.x = Mathf.Clamp01(ratio);
+            healthFill.localScale = scale;
+        }
+    }
 
-        // Disable enemy behavior
-        if (enemyController != null)
-            enemyController.enabled = false;
-
-        // Disable colliders so player can pass through
-        Collider2D[] colliders = GetComponents<Collider2D>();
-        foreach (var col in colliders)
-            col.enabled = false;
-
-        // Destroy game object after short delay to let animation play
-        Destroy(gameObject, 0.5f);
+    void Die()
+    {
+        Destroy(gameObject);
     }
 }

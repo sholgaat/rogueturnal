@@ -104,9 +104,6 @@ private void SpawnEnemiesOnChunk(GameObject chunk)
             float patrolRange = 1f; // adjust how far they walk left/right
             ec.leftLimit = spawnPos.x - patrolRange;
             ec.rightLimit = spawnPos.x + patrolRange;
-
-            // Make them start patrolling left first
-            ec.movingRight = false;
         }
     }
 }

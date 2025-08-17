@@ -12,80 +12,65 @@ public class EnemyController : MonoBehaviour
     public float rightLimit = 2f;
 
     [Header("Aggro")]
-    public Transform player;          // assign the player in inspector
-    public float aggroRange = 5f;     // distance at which enemy starts chasing
-    public float chaseBuffer = 1f;    // extra distance to prevent flicker
+    public Transform player;
+    public float aggroRange = 5f;
 
-    [Header("Hit Reaction")]
+    [Header("Hit")]
     public Vector2 hitForce = new Vector2(5f, 2f);
-    [SerializeField] private Animator animator;
 
     private Rigidbody2D rb;
-    public bool movingRight = false;
-    private bool chasingPlayer = false;
+    private bool movingRight = false;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        movingRight = false; // Start moving left
+        movingRight = false; // start moving left
     }
 
     void Update()
     {
         bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+
+        // Flip if reached edge
         if (!isGrounded)
             Flip();
 
-        if (player != null)
-        {
-            float distanceToPlayer = player.position.x - transform.position.x;
-
-            if (Mathf.Abs(distanceToPlayer) <= aggroRange)
-            {
-                chasingPlayer = true;
-                movingRight = distanceToPlayer > 0;
-            }
-            else if (chasingPlayer && Mathf.Abs(distanceToPlayer) > aggroRange + chaseBuffer)
-            {
-                // Player left range; resume patrol
-                chasingPlayer = false;
-                // Determine direction based on patrol limits
-                movingRight = transform.position.x < (leftLimit + rightLimit) / 2f;
-            }
-        }
-        else
-        {
-            chasingPlayer = false;
-        }
-
-        // Patrol if not chasing
-        if (!chasingPlayer)
+        // Patrol
+        if (!PlayerInAggro())
         {
             if (transform.position.x > rightLimit)
                 movingRight = false;
             else if (transform.position.x < leftLimit)
                 movingRight = true;
-        }
 
-        Move();
+            Move();
+        }
+        else
+        {
+            // Move towards player
+            float dir = (player.position.x > transform.position.x) ? 1 : -1;
+            rb.linearVelocity = new Vector2(dir * moveSpeed, rb.linearVelocity.y);
+
+            // Flip sprite if needed
+            if ((dir > 0 && transform.localScale.x < 0) || (dir < 0 && transform.localScale.x > 0))
+            {
+                Vector3 scale = transform.localScale;
+                scale.x *= -1;
+                transform.localScale = scale;
+            }
+        }
     }
 
     void Move()
     {
-        Vector2 velocity = rb.linearVelocity;
-        velocity.x = (movingRight ? 1 : -1) * moveSpeed;
-        rb.linearVelocity = velocity;
+        rb.linearVelocity = new Vector2((movingRight ? 1 : -1) * moveSpeed, rb.linearVelocity.y);
 
         // Flip sprite if needed
         if ((movingRight && transform.localScale.x < 0) || (!movingRight && transform.localScale.x > 0))
-        {
-            Vector3 scale = transform.localScale;
-            scale.x *= -1;
-            transform.localScale = scale;
-        }
+            Flip();
     }
 
-    private void Flip()
+    void Flip()
     {
         movingRight = !movingRight;
         Vector3 scale = transform.localScale;
@@ -93,21 +78,17 @@ public class EnemyController : MonoBehaviour
         transform.localScale = scale;
     }
 
-
-public void TakeHit(Vector2 attackDirection)
-{
-    Rigidbody2D rb = GetComponent<Rigidbody2D>();
-    if (rb != null)
+    bool PlayerInAggro()
     {
-        rb.linearVelocity = Vector2.zero; // reset current velocity
-        rb.AddForce(new Vector2(hitForce.x * attackDirection.x, hitForce.y), ForceMode2D.Impulse);
+        if (player == null) return false;
+        return Mathf.Abs(player.position.x - transform.position.x) <= aggroRange;
     }
 
-    // Optional: trigger hit animation
-    if (animator != null)
-        animator.SetTrigger("Hit");
-}
-
+    public void TakeHit(Vector2 attackDirection)
+    {
+        rb.linearVelocity = Vector2.zero;
+        rb.AddForce(new Vector2(hitForce.x * attackDirection.x, hitForce.y), ForceMode2D.Impulse);
+    }
 
     void OnDrawGizmos()
     {

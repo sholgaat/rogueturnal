@@ -4,15 +4,14 @@ public class MeleeAttackHitbox : MonoBehaviour
 {
     public int damage = 1;
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        // Check if the collided object has EnemyHealth
-        EnemyHealth enemyHealth = collision.GetComponent<EnemyHealth>();
-        if (enemyHealth != null)
+        EnemyHealth enemy = other.GetComponent<EnemyHealth>();
+        if (enemy != null)
         {
-            // Calculate attack direction
-            Vector2 attackDirection = (collision.transform.position - transform.parent.position).normalized;
-            enemyHealth.TakeDamage(damage, attackDirection);
+            // Determine attack direction
+            Vector2 attackDir = (other.transform.position.x > transform.position.x) ? Vector2.left : Vector2.right;
+            enemy.TakeDamage(damage, attackDir);
         }
     }
 }
