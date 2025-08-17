@@ -93,14 +93,21 @@ public class EnemyController : MonoBehaviour
         transform.localScale = scale;
     }
 
-    public void TakeHit(Vector2 attackDirection)
+
+public void TakeHit(Vector2 attackDirection)
+{
+    Rigidbody2D rb = GetComponent<Rigidbody2D>();
+    if (rb != null)
     {
-        Debug.Log("Taking hit in enemy controller");
-        rb.linearVelocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero; // reset current velocity
         rb.AddForce(new Vector2(hitForce.x * attackDirection.x, hitForce.y), ForceMode2D.Impulse);
-        if (animator != null)
-            animator.SetTrigger("Hit");
     }
+
+    // Optional: trigger hit animation
+    if (animator != null)
+        animator.SetTrigger("Hit");
+}
+
 
     void OnDrawGizmos()
     {
