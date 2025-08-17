@@ -3,7 +3,7 @@ using UnityEngine;
 public class EnemyHealth : MonoBehaviour
 {
     public int maxHealth = 3;
-    private int currentHealth;
+    public int currentHealth;
 
     private EnemyController enemyController;
 
@@ -15,16 +15,19 @@ public class EnemyHealth : MonoBehaviour
 
     public void TakeDamage(int damage, Vector2 attackDirection)
     {
+        Debug.Log("Taking damage");
         currentHealth -= damage;
 
         // Trigger knockback / hit reaction
         if (enemyController != null)
         {
+            Debug.Log("Triggering enemy hit");
             enemyController.TakeHit(attackDirection);
         }
 
         if (currentHealth <= 0)
         {
+            Debug.Log("Enemy died");
             Die();
         }
     }

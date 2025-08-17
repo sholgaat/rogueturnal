@@ -8,9 +8,13 @@ public class FloorSpawner : MonoBehaviour
     public Transform player;
 
     [Header("Settings")]
-    public int initialChunks = 3;          // how many chunks to spawn initially
-    public float spawnThreshold = 30f;     // distance from last chunk to player before spawning next
-    public float despawnDistance = 50f;    // distance behind player to destroy old chunks
+    public int initialChunks = 3;
+    public float spawnThreshold = 30f;
+    public float despawnDistance = 50f;
+
+
+    [Header("Enemy")]
+    public GameObject enemyPrefab; // assign the enemy prefab in Inspector
 
     private List<GameObject> activeChunks = new List<GameObject>();
     private float floorWidth;
@@ -23,15 +27,11 @@ public class FloorSpawner : MonoBehaviour
             return;
         }
 
-        // Assuming the prefab has a SpriteRenderer or Tilemap Renderer to get width
         SpriteRenderer sr = floorPrefab.GetComponentInChildren<SpriteRenderer>();
         if (sr != null)
             floorWidth = sr.bounds.size.x;
         else
-        {
-            // Debug.LogWarning("FloorSpawner: Could not find SpriteRenderer in prefab. Using 10 as default width.");
             floorWidth = 10f;
-        }
 
         // Spawn initial chunks
         Vector3 spawnPos = floorPrefab.transform.position;
@@ -39,6 +39,10 @@ public class FloorSpawner : MonoBehaviour
         {
             GameObject chunk = Instantiate(floorPrefab, spawnPos, Quaternion.identity);
             activeChunks.Add(chunk);
+
+            // Spawn enemies on this chunk
+            SpawnEnemiesOnChunk(chunk);
+
             spawnPos.x += floorWidth;
         }
     }
@@ -47,17 +51,19 @@ public class FloorSpawner : MonoBehaviour
     {
         if (activeChunks.Count == 0) return;
 
-        // Spawn new chunk if player is close enough to the last chunk
         GameObject lastChunk = activeChunks[activeChunks.Count - 1];
         if (player.position.x + spawnThreshold > lastChunk.transform.position.x)
         {
             Vector3 spawnPos = new Vector3(
                 lastChunk.transform.position.x + floorWidth,
-                lastChunk.transform.position.y, // keep Y consistent
+                lastChunk.transform.position.y,
                 lastChunk.transform.position.z
             );
             GameObject newChunk = Instantiate(floorPrefab, spawnPos, Quaternion.identity);
             activeChunks.Add(newChunk);
+
+            // Spawn enemies on the new chunk
+            SpawnEnemiesOnChunk(newChunk);
         }
 
         // Despawn chunks that are far behind the player
@@ -76,4 +82,34 @@ public class FloorSpawner : MonoBehaviour
             Destroy(chunk);
         }
     }
+
+private void SpawnEnemiesOnChunk(GameObject chunk)
+{
+    Transform spawnParent = chunk.transform.Find("EnemySpawnPoints");
+    if (spawnParent == null) return;
+
+    foreach (Transform point in spawnParent)
+    {
+        Vector3 spawnPos = point.position;
+
+        // Slight random X offset to prevent overlapping
+        spawnPos.x += Random.Range(-0.3f, 0.3f);
+
+        GameObject enemy = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
+
+        EnemyController ec = enemy.GetComponent<EnemyController>();
+        if (ec != null)
+        {
+            // Set patrol limits relative to spawn position
+            float patrolRange = 1f; // adjust how far they walk left/right
+            ec.leftLimit = spawnPos.x - patrolRange;
+            ec.rightLimit = spawnPos.x + patrolRange;
+
+            // Make them start patrolling left first
+            ec.movingRight = false;
+        }
+    }
+}
+
+
 }

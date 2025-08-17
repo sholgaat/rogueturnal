@@ -21,7 +21,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private Animator animator;
 
     private Rigidbody2D rb;
-    private bool movingRight = false;
+    public bool movingRight = false;
     private bool chasingPlayer = false;
 
     void Awake()

@@ -243,7 +243,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dba2294640f7a187c8b26840894fc622, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
-  moveSpeed: 5
+  moveSpeed: 3
   groundCheck: {fileID: 8636418245493773211}
   groundCheckRadius: 0.2
   groundLayer:
@@ -251,6 +251,12 @@ MonoBehaviour:
     m_Bits: 256
   leftLimit: 2
   rightLimit: 2
+  player: {fileID: 0}
+  aggroRange: 5
+  chaseBuffer: 1
+  hitForce: {x: 5, y: 2}
+  animator: {fileID: 0}
+  movingRight: 0
 --- !u!114 &5395299400435352435
 MonoBehaviour:
   m_ObjectHideFlags: 0
